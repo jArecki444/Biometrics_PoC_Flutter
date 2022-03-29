@@ -1,6 +1,6 @@
 import 'package:biometrics_auth_poc/presentation/pin_code/bloc/pin_code_page_bloc.dart';
 import 'package:biometrics_auth_poc/presentation/pin_code/widgets/number_button_widget.dart';
-import 'package:biometrics_auth_poc/presentation/pin_code/widgets/pin_dot_widget.dart';
+import 'package:biometrics_auth_poc/presentation/pin_code/widgets/pin_code_dots_indicator_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -28,34 +28,24 @@ class PinCodeAuthBody extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                state.pageStatus.when(
-                  waitingForFirstPinCode: () => const Text('Enter PIN code'),
-                  waitingForRepeatedPinCode: () =>
-                      const Text('Repeat PIN code'),
-                  pinCodeMatch: () => const Text('Successfully authenticated'),
-                  pinCodeNotMatch: () => const Text('Pin codes do not match'),
+                Text(
+                  state.pageStatus.when(
+                    waitingForFirstPinCode: () => 'Enter PIN code',
+                    waitingForRepeatedPinCode: () => 'Repeat PIN code',
+                    pinCodeMatch: () => 'Successfully authenticated',
+                    pinCodeNotMatch: () => 'Pin codes do not match',
+                  ),
                 ),
                 Flexible(
                   flex: 1,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      4,
-                      (index) => PinDot(
-                        fillDotBackground: index <
-                            getPinCodeLength(
-                              state.pageStatus,
-                              state.pinCode,
-                              state.repeatedPinCode,
-                            ),
-                      ),
-                    ),
+                  child: PinCodeDotsIndicator(
+                    currentStateData: state,
                   ),
                 ),
                 const Spacer(),
                 const Flexible(
                   flex: 2,
-                  child: const PinNumberKeyboard(),
+                  child: PinNumberKeyboard(),
                 ),
               ],
             ),
@@ -63,17 +53,6 @@ class PinCodeAuthBody extends StatelessWidget {
         );
       },
     );
-  }
-
-  int getPinCodeLength(
-    PageStatus pageStatus,
-    String firstPinCode,
-    String repeatedPinCode,
-  ) {
-    return pageStatus.maybeWhen(
-        waitingForFirstPinCode: () => firstPinCode.length,
-        waitingForRepeatedPinCode: () => repeatedPinCode.length,
-        orElse: () => 0);
   }
 }
 
