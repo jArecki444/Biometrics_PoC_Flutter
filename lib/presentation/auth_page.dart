@@ -1,5 +1,6 @@
 import 'package:biometrics_auth_poc/api/local_auth_api.dart';
-import 'package:biometrics_auth_poc/presentation/pin_code/pin_code_page.dart';
+import 'package:biometrics_auth_poc/presentation/pin_code/pin_code_auth_body.dart';
+import 'package:biometrics_auth_poc/presentation/pin_code/pin_code_auth_page.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -69,7 +70,7 @@ class _AuthPageState extends State<AuthPage> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const PinCodeAuthorizationPage(),
+                      builder: (context) => const PinCodeAuthPage(),
                     ),
                   );
                 },

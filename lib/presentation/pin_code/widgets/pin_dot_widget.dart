@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class PinDot extends StatelessWidget {
-  final bool input;
+  final bool fillDotBackground;
 
-  const PinDot({Key? key, required this.input}) : super(key: key);
+  const PinDot({Key? key, required this.fillDotBackground}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class PinDot extends StatelessWidget {
         width: 15,
         height: 15,
         decoration: BoxDecoration(
-          color: input ? Theme.of(context).primaryColor : null,
+          color: fillDotBackground ? Theme.of(context).primaryColor : null,
           border:
               Border.all(color: Colors.grey, width: 1),
           shape: BoxShape.circle,
