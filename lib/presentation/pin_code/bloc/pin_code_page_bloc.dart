@@ -15,6 +15,37 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
             alreadyStoredPinCode: null,
           ),
         ) {
+    on<EraseLastPinInputPressedEvent>(
+      (event, emit) {
+        if (state.repeatedPinCode.isNotEmpty) {
+          emit(
+            state.copyWith(
+              repeatedPinCode: state.repeatedPinCode
+                  .substring(0, state.repeatedPinCode.length - 1),
+            ),
+          );
+        } else if (state.pinCode.isNotEmpty) {
+          emit(
+            state.copyWith(
+              pinCode: state.pinCode.substring(0, state.pinCode.length - 1),
+            ),
+          );
+        }
+      },
+    );
+
+    on<TryAgainButtonPressedEvent>(
+      (event, emit) {
+        emit(
+          state.copyWith(
+            pageStatus: const PageStatus.waitingForFirstPinCode(),
+            pinCode: '',
+            repeatedPinCode: '',
+          ),
+        );
+      },
+    );
+
     on<PinButtonButtonPressedEvent>(
       (event, emit) async {
         if (state.pinCode.length < 4) {
@@ -68,25 +99,6 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
               }
             }
           }
-        }
-      },
-    );
-
-    on<EraseLastPinInputPressedEvent>(
-      (event, emit) {
-        if (state.repeatedPinCode.isNotEmpty) {
-          emit(
-            state.copyWith(
-              repeatedPinCode: state.repeatedPinCode
-                  .substring(0, state.repeatedPinCode.length - 1),
-            ),
-          );
-        } else if (state.pinCode.isNotEmpty) {
-          emit(
-            state.copyWith(
-              pinCode: state.pinCode.substring(0, state.pinCode.length - 1),
-            ),
-          );
         }
       },
     );

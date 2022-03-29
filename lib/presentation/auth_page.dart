@@ -67,14 +67,15 @@ class _AuthPageState extends State<AuthPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const PinCodeAuthPage(),
-                    ),
-                  );
-                },
-                child: const Text('Use PIN code'))
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const PinCodeAuthPage(),
+                  ),
+                );
+              },
+              child: const Text('Use PIN code'),
+            )
           ],
         ),
       ),

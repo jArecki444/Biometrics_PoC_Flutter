@@ -6,4 +6,6 @@ class PinCodePageEvent with _$PinCodePageEvent {
       EraseLastPinInputPressedEvent;
   const factory PinCodePageEvent.pinButtonButtonPressed({required String pinInput}) =
       PinButtonButtonPressedEvent;
+  const factory PinCodePageEvent.tryAgainButtonPressed() =
+      TryAgainButtonPressedEvent;
 }

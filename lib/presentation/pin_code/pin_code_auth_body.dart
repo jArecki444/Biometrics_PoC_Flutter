@@ -21,33 +21,52 @@ class PinCodeAuthBody extends StatelessWidget {
           appBar: AppBar(
             title: const Text('PIN authorization'),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(40),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  state.pageStatus.when(
-                    waitingForFirstPinCode: () => 'Enter PIN code',
-                    waitingForRepeatedPinCode: () => 'Repeat PIN code',
-                    pinCodeMatch: () => 'Successfully authenticated',
-                    pinCodeNotMatch: () => 'Pin codes do not match',
+          body: state.pageStatus.maybeWhen(
+            pinCodeMatch: () => const Center(
+              child: Text('Authorization successful'),
+            ),
+            pinCodeNotMatch: () => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Authorization failed'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<PinCodePageBloc>().add(
+                          const PinCodePageEvent.tryAgainButtonPressed(),
+                        ),
+                    child: const Text('Try again'),
                   ),
-                ),
-                Flexible(
-                  flex: 1,
-                  child: PinCodeDotsIndicator(
-                    currentStateData: state,
+                ],
+              ),
+            ),
+            orElse: () => Padding(
+              padding: const EdgeInsets.all(40),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.pageStatus.maybeWhen(
+                      waitingForFirstPinCode: () => 'Enter PIN code',
+                      waitingForRepeatedPinCode: () => 'Repeat PIN code',
+                      orElse: () => '',
+                    ),
                   ),
-                ),
-                const Spacer(),
-                const Flexible(
-                  flex: 2,
-                  child: PinNumberKeyboard(),
-                ),
-              ],
+                  Flexible(
+                    flex: 1,
+                    child: PinCodeDotsIndicator(
+                      currentStateData: state,
+                    ),
+                  ),
+                  const Spacer(),
+                  const Flexible(
+                    flex: 2,
+                    child: PinNumberKeyboard(),
+                  ),
+                ],
+              ),
             ),
           ),
         );
