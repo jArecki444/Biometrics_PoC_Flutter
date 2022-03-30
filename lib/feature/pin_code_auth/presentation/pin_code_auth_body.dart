@@ -13,7 +13,7 @@ class PinCodeAuthBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<PinCodePageBloc, PinCodePageState>(
       builder: (context, state) {
-        return Scaffold(
+      return Scaffold(
           appBar: AppBar(
             title: const Text('PIN authorization'),
           ),
