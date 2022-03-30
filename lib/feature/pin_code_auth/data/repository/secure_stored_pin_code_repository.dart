@@ -1,6 +1,8 @@
 import 'package:biometrics_auth_poc/core/persistence/secure_storage/secure_storage.dart';
 import 'package:biometrics_auth_poc/feature/pin_code_auth/domain/repository/stored_pin_code_repository.dart';
+import 'package:injectable/injectable.dart';
 
+@singleton
 class SecureStoredPinCodeRepository extends StoredPinCodeRepository {
   final _pinCodeKey = 'PIN_CODE';
   final SecureStorage secureStorage;

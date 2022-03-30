@@ -1,3 +1,4 @@
+import 'package:biometrics_auth_poc/feature/pin_code_auth/domain/repository/stored_pin_code_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -6,7 +7,8 @@ part 'pin_code_page_state.dart';
 part 'pin_code_page_bloc.freezed.dart';
 
 class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
-  PinCodePageBloc()
+  final StoredPinCodeRepository _pinCodeRepository;
+  PinCodePageBloc(this._pinCodeRepository)
       : super(
           const PinCodePageState(
             pageStatus: PageStatus.waitingForFirstPinCode(),
