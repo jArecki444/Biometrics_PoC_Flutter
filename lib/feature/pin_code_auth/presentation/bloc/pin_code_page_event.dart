@@ -8,4 +8,6 @@ class PinCodePageEvent with _$PinCodePageEvent {
       PinButtonButtonPressedEvent;
   const factory PinCodePageEvent.tryAgainButtonPressed() =
       TryAgainButtonPressedEvent;
+  const factory PinCodePageEvent.storedPinCodeFound({required String pinCode}) =
+      StoredPinCodeFoundEvent;
 }

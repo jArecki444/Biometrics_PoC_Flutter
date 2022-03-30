@@ -10,7 +10,7 @@ class PinCodeAuthPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => inject<PinCodePageBloc>(),
+      create: (_) => inject<PinCodePageBloc>()..initialize(),
       child: const PinCodeAuthBody(),
     );
   }

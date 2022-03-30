@@ -1,4 +1,3 @@
-
 import 'package:biometrics_auth_poc/feature/pin_code_auth/presentation/bloc/pin_code_page_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,12 +7,16 @@ import 'widgets/pin_code_dots_indicator_widget.dart';
 
 class PinCodeAuthBody extends StatelessWidget {
   const PinCodeAuthBody({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PinCodePageBloc, PinCodePageState>(
+    return BlocConsumer<PinCodePageBloc, PinCodePageState>(
+      listener: (context, state) {
+        print('PoC Debug info - stored pin code: ${state.alreadyStoredPinCode}');
+        print('PoC Debug info -pin code: ${state.pinCode}');
+      },
       builder: (context, state) {
-      return Scaffold(
+        return Scaffold(
           appBar: AppBar(
             title: const Text('PIN authorization'),
           ),
