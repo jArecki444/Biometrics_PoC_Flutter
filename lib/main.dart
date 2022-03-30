@@ -1,4 +1,4 @@
-import 'package:biometrics_auth_poc/presentation/auth_page.dart';
+import 'package:biometrics_auth_poc/feature/biometrics/presentation/biometrics_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthPage(),
+      home: const BiometricsPage(),
     );
   }
 }

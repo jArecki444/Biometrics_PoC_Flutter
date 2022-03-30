@@ -1,5 +1,5 @@
-import 'package:biometrics_auth_poc/presentation/pin_code/bloc/pin_code_page_bloc.dart';
-import 'package:biometrics_auth_poc/presentation/pin_code/pin_code_auth_body.dart';
+import 'package:biometrics_auth_poc/feature/pin_code_auth/presentation/bloc/pin_code_page_bloc.dart';
+import 'package:biometrics_auth_poc/feature/pin_code_auth/presentation/pin_code_auth_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

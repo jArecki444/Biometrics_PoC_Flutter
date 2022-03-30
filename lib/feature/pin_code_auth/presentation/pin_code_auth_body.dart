@@ -1,21 +1,17 @@
-import 'package:biometrics_auth_poc/presentation/pin_code/bloc/pin_code_page_bloc.dart';
-import 'package:biometrics_auth_poc/presentation/pin_code/widgets/number_button_widget.dart';
-import 'package:biometrics_auth_poc/presentation/pin_code/widgets/pin_code_dots_indicator_widget.dart';
+
+import 'package:biometrics_auth_poc/feature/pin_code_auth/presentation/bloc/pin_code_page_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'widgets/number_button_widget.dart';
+import 'widgets/pin_code_dots_indicator_widget.dart';
+
 class PinCodeAuthBody extends StatelessWidget {
   const PinCodeAuthBody({Key? key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PinCodePageBloc, PinCodePageState>(
-      listener: (context, state) {
-        if (state.pinCode.length == 4) {
-          //show snack bar
-          print('Please repeat PIN code');
-        }
-      },
+    return BlocBuilder<PinCodePageBloc, PinCodePageState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

@@ -1,18 +1,19 @@
-import 'package:biometrics_auth_poc/api/local_auth_api.dart';
-import 'package:biometrics_auth_poc/presentation/pin_code/pin_code_auth_body.dart';
-import 'package:biometrics_auth_poc/presentation/pin_code/pin_code_auth_page.dart';
+import 'package:biometrics_auth_poc/feature/biometrics/data/repository/local_auth_biometrics_repository.dart';
+import 'package:biometrics_auth_poc/feature/pin_code_auth/presentation/pin_code_auth_page.dart';
 import 'package:flutter/material.dart';
-import 'package:local_auth/local_auth.dart';
 
-class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+class BiometricsPage extends StatefulWidget {
+  const BiometricsPage({Key? key}) : super(key: key);
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<BiometricsPage> createState() => _BiometricsPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
-  List<BiometricType> _availableBiometrics = [];
+class _BiometricsPageState extends State<BiometricsPage> {
+  final LocalAuthBiometricsRepository biometricsRepository =
+      LocalAuthBiometricsRepository();
+
+  List<String> _availableBiometrics = [];
   bool? _canCheckBiometrics;
   bool _authorized = false;
 
@@ -35,7 +36,8 @@ class _AuthPageState extends State<AuthPage> {
             ElevatedButton(
               child: const Text('Check biometrics'),
               onPressed: () async {
-                final hasBiometrics = await LocalAuthApi.hasBiometrics();
+                final hasBiometrics =
+                    await biometricsRepository.hasBiometrics();
                 setState(() {
                   _canCheckBiometrics = hasBiometrics;
                 });
@@ -46,7 +48,8 @@ class _AuthPageState extends State<AuthPage> {
             ElevatedButton(
               child: const Text('Authenticate'),
               onPressed: () async {
-                final isAuthenticated = await LocalAuthApi.authenticate();
+                final isAuthenticated =
+                    await biometricsRepository.authenticateWithBiometrics();
                 setState(() {
                   _authorized = isAuthenticated;
                 });
@@ -59,7 +62,8 @@ class _AuthPageState extends State<AuthPage> {
             ElevatedButton(
               child: const Text('Get available biometrics'),
               onPressed: () async {
-                final biometrics = await LocalAuthApi.getAvailableBiometrics();
+                final biometrics =
+                    await biometricsRepository.getAvailableBiometrics();
                 setState(() {
                   _availableBiometrics = biometrics;
                 });

@@ -1,10 +1,12 @@
+import 'package:biometrics_auth_poc/feature/biometrics/domain/repository/biometrics_repository.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
-class LocalAuthApi {
-  static final _auth = LocalAuthentication();
+class LocalAuthBiometricsRepository extends BiometricsRepository {
+  final _auth = LocalAuthentication();
 
-  static Future<bool> hasBiometrics() async {
+  @override
+  Future<bool> hasBiometrics() async {
     try {
       return await _auth.canCheckBiometrics;
     } on PlatformException catch (e) {
@@ -13,7 +15,8 @@ class LocalAuthApi {
     }
   }
 
-  static Future<bool> authenticate() async {
+  @override
+  Future<bool> authenticateWithBiometrics() async {
     final isAvailable = await hasBiometrics();
     if (!isAvailable) return false;
 
@@ -22,7 +25,7 @@ class LocalAuthApi {
         localizedReason: 'Use one of available authentication methods',
         useErrorDialogs: true,
         stickyAuth: false,
-        biometricOnly: false,
+        biometricOnly: true,
       );
     } on PlatformException catch (e) {
       print(e);
@@ -30,9 +33,11 @@ class LocalAuthApi {
     }
   }
 
-  static Future<List<BiometricType>> getAvailableBiometrics() async {
+  @override
+  Future<List<String>> getAvailableBiometrics() async {
     try {
-      return await _auth.getAvailableBiometrics();
+      final biometricTypes = await _auth.getAvailableBiometrics();
+      return biometricTypes.map((type) => type.toString()).toList();
     } on PlatformException catch (e) {
       print(e);
       return [];
