@@ -1,4 +1,4 @@
-import 'package:biometrics_auth_poc/feature/pin_code_auth/domain/repository/stored_pin_code_repository.dart';
+import 'package:biometrics_auth_poc/feature/pin_code_auth/domain/use_case/pin_code_use_case.dart';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -7,35 +7,34 @@ part 'pin_code_page_state.dart';
 part 'pin_code_page_bloc.freezed.dart';
 
 class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
-  final StoredPinCodeRepository _pinCodeRepository;
+  final PinCodeUseCase _pinCodeUseCase;
 
   /// This is the first thing that will be called when user enters pin code page
-  /// and it will check if there is already a pin code stored in the device.
+  /// and it will check if there is already stored pin code.
   Future<void> initialize() async {
-    final storedPinCode = await _pinCodeRepository.getAlreadyStoredPinCode();
-    if (storedPinCode != null) {
-      add(
-        PinCodePageEvent.storedPinCodeFound(pinCode: storedPinCode),
-      );
-    }
+    final isPinCodeAlreadyStored =
+        await _pinCodeUseCase.isPinCodeAlreadyStored();
+    add(
+      PinCodePageEvent.checkIfPinCodeIsAlreadyStored(
+          isAlreadyStored: isPinCodeAlreadyStored),
+    );
   }
 
-  PinCodePageBloc(this._pinCodeRepository)
+  PinCodePageBloc(this._pinCodeUseCase)
       : super(
           const PinCodePageState(
             pageStatus: PageStatus.waitingForFirstPinCode(),
             pinCode: '',
             repeatedPinCode: '',
-            alreadyStoredPinCode: null,
+            isPinCodeAlreadyStored: false,
           ),
         ) {
-    // If after block init we will assume that there is already a pin code stored
-    // Then emit new state with that pin code.
-    on<StoredPinCodeFoundEvent>(
+    // After block init we will assume that there is already a pin code stored
+    on<CheckIfPinCodeIsAlreadyStored>(
       (event, emit) {
         emit(
           state.copyWith(
-            alreadyStoredPinCode: event.pinCode,
+            isPinCodeAlreadyStored: event.isAlreadyStored,
           ),
         );
       },
@@ -74,7 +73,7 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
 
     on<PinButtonButtonPressedEvent>(
       (event, emit) async {
-        if (state.pinCode.length < 4) {
+        if (state.pageStatus == const PageStatus.waitingForFirstPinCode()) {
           emit(
             state.copyWith(
               pinCode: state.pinCode + event.pinInput,
@@ -89,10 +88,13 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
             // This delay is used to give user time to see the pin code of full length
             // Otherwise user will be navigated immediately to the repeated pin code page after
 
-            if (state.alreadyStoredPinCode != null) {
+            if (state.isPinCodeAlreadyStored) {
+              final isMatchingPinCode = await _pinCodeUseCase.isMatchingPinCode(
+                state.pinCode,
+              );
               emit(
                 state.copyWith(
-                  pageStatus: state.alreadyStoredPinCode == state.pinCode
+                  pageStatus: isMatchingPinCode
                       ? const PageStatus.pinCodeMatch()
                       : const PageStatus.pinCodeNotMatch(),
                   pinCode: '',
@@ -109,7 +111,8 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
             }
           }
         } else {
-          if (state.repeatedPinCode.length < 4) {
+          if (state.pageStatus ==
+              const PageStatus.waitingForRepeatedPinCode()) {
             emit(
               state.copyWith(
                 repeatedPinCode: state.repeatedPinCode + event.pinInput,
@@ -122,7 +125,7 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
               await Future.delayed(const Duration(milliseconds: 200));
 
               if (state.repeatedPinCode == state.pinCode) {
-                await _pinCodeRepository.savePinCode(state.pinCode);
+                await _pinCodeUseCase.savePinCode(state.pinCode);
                 emit(
                   state.copyWith(
                     pageStatus: const PageStatus.pinCodeMatch(),

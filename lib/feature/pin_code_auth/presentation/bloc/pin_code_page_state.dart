@@ -5,7 +5,7 @@ class PinCodePageState with _$PinCodePageState {
   const factory PinCodePageState({
     required String pinCode,
     required String repeatedPinCode,
-    required String? alreadyStoredPinCode,
+    required bool isPinCodeAlreadyStored,
     required PageStatus pageStatus,
   }) = _PinCodePageState;
 }
