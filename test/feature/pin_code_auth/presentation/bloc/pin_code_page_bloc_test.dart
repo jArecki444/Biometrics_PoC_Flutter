@@ -199,5 +199,66 @@ void main() {
         ),
       ],
     );
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should return pinCodeMatch() state after emitting 4th character of repeatedPinCode
+    when there is no stored pin code but repeatedPinCode matches the entered pin code''',
+      build: () {
+        return bloc;
+      },
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForRepeatedPinCode(),
+        pinCode: '1234',
+        repeatedPinCode: '123',
+        isPinCodeAlreadyStored: false,
+      ),
+      act: (bloc) => bloc
+          .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4')),
+      wait: const Duration(milliseconds: 300),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForRepeatedPinCode(),
+          pinCode: '1234',
+          repeatedPinCode: '1234',
+          isPinCodeAlreadyStored: false,
+        ),
+        PinCodePageState(
+          pageStatus: PageStatus.pinCodeMatch(),
+          pinCode: '',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: false,
+        ),
+      ],
+    );
+
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should return pinCodeNotMatch() state after emitting 4th character of repeatedPinCode
+    when there is no already stored pin code and repeatedPinCode is different from the entered one''',
+      build: () {
+        return bloc;
+      },
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForRepeatedPinCode(),
+        pinCode: '1234',
+        repeatedPinCode: '123',
+        isPinCodeAlreadyStored: false,
+      ),
+      act: (bloc) => bloc
+          .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '0')),
+      wait: const Duration(milliseconds: 300),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForRepeatedPinCode(),
+          pinCode: '1234',
+          repeatedPinCode: '1230',
+          isPinCodeAlreadyStored: false,
+        ),
+        PinCodePageState(
+          pageStatus: PageStatus.pinCodeNotMatch(),
+          pinCode: '',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: false,
+        ),
+      ],
+    );
   });
 }
