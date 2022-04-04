@@ -10,7 +10,10 @@ class BiometricsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => inject<BiometricsPageBloc>()..initialize(),
+      create: (_) => inject<BiometricsPageBloc>()
+        ..add(
+          const BiometricsPageEvent.setBiometricsAvailability(),
+        ),
       child: const BiometricsBody(),
     );
   }

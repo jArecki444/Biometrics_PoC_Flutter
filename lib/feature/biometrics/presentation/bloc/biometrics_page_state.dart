@@ -21,7 +21,3 @@ class PageStatus with _$PageStatus {
   }) = _BiometricsUnavailable;
 }
 
-enum UnavailableBiometricsReasonEnum {
-  biometricsNotConfigured,
-  biometricsNotAvailableOnDevice,
-}

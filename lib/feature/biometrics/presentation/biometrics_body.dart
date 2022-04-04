@@ -1,3 +1,4 @@
+import 'package:biometrics_auth_poc/feature/biometrics/domain/use_case/biometrics_use_case.dart';
 import 'package:biometrics_auth_poc/feature/biometrics/presentation/bloc/biometrics_page_bloc.dart';
 import 'package:biometrics_auth_poc/feature/pin_code_auth/presentation/pin_code_auth_page.dart';
 import 'package:flutter/material.dart';
@@ -116,9 +117,9 @@ class BiometricsBody extends StatelessWidget {
 String getBiometricsUnavailabilityReasonText(
     UnavailableBiometricsReasonEnum reason) {
   switch (reason) {
-    case UnavailableBiometricsReasonEnum.biometricsNotAvailableOnDevice:
-      return 'Biometrics not available on device, please try authorization with PIN code.';
+    case UnavailableBiometricsReasonEnum.biometricsNotSupportedOnDevice:
+      return 'Biometrics are not supported on this device, please try with PIN code';
     case UnavailableBiometricsReasonEnum.biometricsNotConfigured:
-      return 'Biometrics not configured. Please check your device settings. You can also try authorization with PIN code.';
+      return 'Biometrics are not configured. Please check your device settings. You can also try authorization with PIN code.';
   }
 }

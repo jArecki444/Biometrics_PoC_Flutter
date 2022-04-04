@@ -9,8 +9,7 @@ class LocalAuthBiometricsRepository extends BiometricsRepository {
   Future<bool> hasBiometrics() async {
     try {
       return await _auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      print(e);
+    } on PlatformException catch (_) {
       return false;
     }
   }
@@ -27,8 +26,7 @@ class LocalAuthBiometricsRepository extends BiometricsRepository {
         stickyAuth: false,
         biometricOnly: true,
       );
-    } on PlatformException catch (e) {
-      print(e);
+    } on PlatformException catch (_) {
       return false;
     }
   }
@@ -38,8 +36,7 @@ class LocalAuthBiometricsRepository extends BiometricsRepository {
     try {
       final biometricTypes = await _auth.getAvailableBiometrics();
       return biometricTypes.map((type) => type.toString()).toList();
-    } on PlatformException catch (e) {
-      print(e);
+    } on PlatformException catch (_) {
       return [];
     }
   }
