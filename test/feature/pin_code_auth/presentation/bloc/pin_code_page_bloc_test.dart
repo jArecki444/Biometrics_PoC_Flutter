@@ -57,4 +57,47 @@ void main() {
       ],
     );
   });
+
+  group('Tests related to emitting eraseLastPinInputPressed event', () {
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      'Should return pinCode without last character, after emitting eraseLastPinInputPressed event',
+      build: () => bloc,
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pinCode: '123',
+        repeatedPinCode: '',
+        isPinCodeAlreadyStored: false,
+      ),
+      act: (bloc) =>
+          bloc.add(const PinCodePageEvent.eraseLastPinInputPressed()),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pinCode: '12',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: false,
+        ),
+      ],
+    );
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      'Should return repeatedPinCode without last character, after emitting eraseLastPinInputPressed event',
+      build: () => bloc,
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForRepeatedPinCode(),
+        pinCode: '1234',
+        repeatedPinCode: '125',
+        isPinCodeAlreadyStored: false,
+      ),
+      act: (bloc) =>
+          bloc.add(const PinCodePageEvent.eraseLastPinInputPressed()),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForRepeatedPinCode(),
+          pinCode: '1234',
+          repeatedPinCode: '12',
+          isPinCodeAlreadyStored: false,
+        ),
+      ],
+    );
+  });
 }
