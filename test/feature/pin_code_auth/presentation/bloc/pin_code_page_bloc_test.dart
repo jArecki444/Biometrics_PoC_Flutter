@@ -100,4 +100,104 @@ void main() {
       ],
     );
   });
+
+  group('Tests related to emitting tryAgainButtonPressed event', () {
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should return initial state after emitting tryAgainButtonPressed event
+    when user entered pin code that is different from the stored one''',
+      build: () => bloc,
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.pinCodeNotMatch(),
+        pinCode: '',
+        repeatedPinCode: '',
+        isPinCodeAlreadyStored: true,
+      ),
+      act: (bloc) => bloc.add(const PinCodePageEvent.tryAgainButtonPressed()),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pinCode: '',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: true,
+        ),
+      ],
+    );
+  });
+
+  group(
+      'Tests related to emitting final state (pinCodeMatch / pinCodeNotMatch)',
+      () {
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should return pinCodeMatch() state after emitting 4th character of pin code
+    when there is already a stored pin code and it matches the entered pin code''',
+      build: () {
+        when(mockStoredPinCodeUseCase.isPinCodeAlreadyStored()).thenAnswer(
+          (_) async => true,
+        );
+        when(mockStoredPinCodeUseCase.isMatchingPinCode('1234')).thenAnswer(
+          (_) async => true,
+        );
+        return bloc;
+      },
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pinCode: '123',
+        repeatedPinCode: '',
+        isPinCodeAlreadyStored: true,
+      ),
+      act: (bloc) => bloc
+          .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4')),
+      wait: const Duration(milliseconds: 300),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pinCode: '1234',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: true,
+        ),
+        PinCodePageState(
+          pageStatus: PageStatus.pinCodeMatch(),
+          pinCode: '',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: true,
+        ),
+      ],
+    );
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should return pinCodeNotMatch() state after emitting 4th character of pin code
+    when there is already a stored pin code and it does not match the entered pin code''',
+      build: () {
+        when(mockStoredPinCodeUseCase.isPinCodeAlreadyStored()).thenAnswer(
+          (_) async => true,
+        );
+        when(mockStoredPinCodeUseCase.isMatchingPinCode(any)).thenAnswer(
+          (_) async => false,
+        );
+        return bloc;
+      },
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pinCode: '123',
+        repeatedPinCode: '',
+        isPinCodeAlreadyStored: true,
+      ),
+      act: (bloc) => bloc
+          .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4')),
+      wait: const Duration(milliseconds: 300),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pinCode: '1234',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: true,
+        ),
+        PinCodePageState(
+          pageStatus: PageStatus.pinCodeNotMatch(),
+          pinCode: '',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: true,
+        ),
+      ],
+    );
+  });
 }
