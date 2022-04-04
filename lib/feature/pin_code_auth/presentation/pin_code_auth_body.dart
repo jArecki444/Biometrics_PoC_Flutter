@@ -12,7 +12,6 @@ class PinCodeAuthBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<PinCodePageBloc, PinCodePageState>(
       listener: (context, state) {
-        print('PoC Debug info - stored pin code: ${state.alreadyStoredPinCode}');
         print('PoC Debug info -pin code: ${state.pinCode}');
       },
       builder: (context, state) {
