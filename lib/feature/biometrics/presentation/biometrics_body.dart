@@ -15,19 +15,82 @@ class BiometricsBody extends StatelessWidget {
             title: const Text('Biometrics PoC'),
           ),
           body: state.pageStatus.when(
-              waitingForSelectionOfAuthMethod: () {
-                return Center(
+            waitingForSelectionOfAuthMethod: () {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Select authentication method'),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => context.read<BiometricsPageBloc>().add(
+                            const BiometricsPageEvent
+                                .tryToAuthorizeWithBiometrics(),
+                          ),
+                      child: const Text('Authorize with biometrics'),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const PinCodeAuthPage(),
+                        ),
+                      ),
+                      child: const Text('Authorize with PIN code'),
+                    ),
+                    const SizedBox(height: 50),
+                    Text(
+                      'Debug info - Available biometrics options: ${state.availableBiometricsOptions}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              );
+            },
+            checkingBiometricsAvailability: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            authorized: () => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Successfully authorized'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<BiometricsPageBloc>().add(
+                          const BiometricsPageEvent.restartAuthState(),
+                        ),
+                    child: const Text('Reset auth state'),
+                  ),
+                ],
+              ),
+            ),
+            unauthorized: () => Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Unauthorized'),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () => context.read<BiometricsPageBloc>().add(
+                          const BiometricsPageEvent.restartAuthState(),
+                        ),
+                    child: const Text('Reset auth state'),
+                  ),
+                ],
+              ),
+            ),
+            biometricsUnavailable: (UnavailableBiometricsReasonEnum reason) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Select authentication method'),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () => context.read<BiometricsPageBloc>().add(
-                              const BiometricsPageEvent
-                                  .tryToAuthorizeWithBiometrics(),
-                            ),
-                        child: const Text('Authorize with biometrics'),
+                      Text(
+                        getBiometricsUnavailabilityReasonText(reason),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
@@ -36,50 +99,26 @@ class BiometricsBody extends StatelessWidget {
                             builder: (context) => const PinCodeAuthPage(),
                           ),
                         ),
-                        child: const Text('Authorize with PIN code'),
+                        child: const Text('Try with PIN code'),
                       ),
                     ],
                   ),
-                );
-              },
-              checkingBiometricsAvailability: () => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-              authorized: () => Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Successfully authorized'),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () => context
-                              .read<BiometricsPageBloc>()
-                              .add(
-                                const BiometricsPageEvent.restartAuthState(),
-                              ),
-                          child: Text('Reset auth state'),
-                        ),
-                      ],
-                    ),
-                  ),
-              unauthorized: () => const Center(
-                    child: Text('Unauthorized'),
-                  ),
-              biometricsUnavailable: (UnavailableBiometricsReasonEnum reason) {
-                switch (reason) {
-                  case UnavailableBiometricsReasonEnum
-                      .biometricsNotAvailableOnDevice:
-                    return const Center(
-                      child: Text('Biometrics not available on device'),
-                    );
-                  case UnavailableBiometricsReasonEnum.biometricsNotConfigured:
-                    return const Center(
-                      child: Text('Biometrics not configured'),
-                    );
-                }
-              }),
+                ),
+              );
+            },
+          ),
         );
       },
     );
+  }
+}
+
+String getBiometricsUnavailabilityReasonText(
+    UnavailableBiometricsReasonEnum reason) {
+  switch (reason) {
+    case UnavailableBiometricsReasonEnum.biometricsNotAvailableOnDevice:
+      return 'Biometrics not available on device, please try authorization with PIN code.';
+    case UnavailableBiometricsReasonEnum.biometricsNotConfigured:
+      return 'Biometrics not configured. Please check your device settings. You can also try authorization with PIN code.';
   }
 }
