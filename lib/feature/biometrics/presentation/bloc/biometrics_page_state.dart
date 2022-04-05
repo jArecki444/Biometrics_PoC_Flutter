@@ -17,7 +17,7 @@ class PageStatus with _$PageStatus {
   const factory PageStatus.authorized() = _Authorized;
   const factory PageStatus.unauthorized() = _Unauthorized;
   const factory PageStatus.biometricsUnavailable({
-    required UnavailableBiometricsReasonEnum reason,
+    required UnavailableBiometricsReason reason,
   }) = _BiometricsUnavailable;
 }
 

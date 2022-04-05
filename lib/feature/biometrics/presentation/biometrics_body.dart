@@ -82,7 +82,7 @@ class BiometricsBody extends StatelessWidget {
                 ],
               ),
             ),
-            biometricsUnavailable: (UnavailableBiometricsReasonEnum reason) {
+            biometricsUnavailable: (UnavailableBiometricsReason reason) {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(18.0),
@@ -115,11 +115,11 @@ class BiometricsBody extends StatelessWidget {
 }
 
 String getBiometricsUnavailabilityReasonText(
-    UnavailableBiometricsReasonEnum reason) {
+    UnavailableBiometricsReason reason) {
   switch (reason) {
-    case UnavailableBiometricsReasonEnum.biometricsNotSupportedOnDevice:
+    case UnavailableBiometricsReason.biometricsNotSupportedOnDevice:
       return 'Biometrics are not supported on this device, please try with PIN code';
-    case UnavailableBiometricsReasonEnum.biometricsNotConfigured:
+    case UnavailableBiometricsReason.biometricsNotConfigured:
       return 'Biometrics are not configured. Please check your device settings. You can also try authorization with PIN code.';
   }
 }

@@ -27,14 +27,14 @@ class LocalAuthBiometricsUseCase extends BiometricsUseCase {
 
 
   @override
-  Future<UnavailableBiometricsReasonEnum>
+  Future<UnavailableBiometricsReason>
       getUnavailableBiometricsReason() async {
     final biometricsSupportedOnDevice =
         await _biometricsRepository.hasBiometrics();
     final availableBiometricsOptions =
         await _biometricsRepository.getAvailableBiometrics();
     return biometricsSupportedOnDevice && availableBiometricsOptions.isEmpty
-        ? UnavailableBiometricsReasonEnum.biometricsNotConfigured
-        : UnavailableBiometricsReasonEnum.biometricsNotSupportedOnDevice;
+        ? UnavailableBiometricsReason.biometricsNotConfigured
+        : UnavailableBiometricsReason.biometricsNotSupportedOnDevice;
   }
 }

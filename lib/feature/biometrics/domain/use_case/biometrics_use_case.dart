@@ -4,7 +4,7 @@ abstract class BiometricsUseCase {
   Future<bool> hasBiometricsEnabled();
 
   /// Determine why biometrics is not available
-  Future<UnavailableBiometricsReasonEnum> getUnavailableBiometricsReason();
+  Future<UnavailableBiometricsReason> getUnavailableBiometricsReason();
 
   /// Try to authenticate the user with biometrics
   Future<bool> authenticateWithBiometrics();
@@ -13,7 +13,7 @@ abstract class BiometricsUseCase {
   Future<List<String>> getAvailableBiometrics();
 }
 
-enum UnavailableBiometricsReasonEnum {
+enum UnavailableBiometricsReason {
   biometricsNotConfigured,
   biometricsNotSupportedOnDevice,
 }
