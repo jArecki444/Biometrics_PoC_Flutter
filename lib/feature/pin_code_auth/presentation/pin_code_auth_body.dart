@@ -10,10 +10,7 @@ class PinCodeAuthBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<PinCodePageBloc, PinCodePageState>(
-      listener: (context, state) {
-        print('PoC Debug info -pin code: ${state.pinCode}');
-      },
+    return BlocBuilder<PinCodePageBloc, PinCodePageState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -23,6 +20,7 @@ class PinCodeAuthBody extends StatelessWidget {
             pinCodeMatch: () => const Center(
               child: Text('Authorization successful'),
             ),
+
             pinCodeNotMatch: () => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -38,6 +36,8 @@ class PinCodeAuthBody extends StatelessWidget {
                 ],
               ),
             ),
+
+            //waitingForFirstPinCode or waitingForRepeatedPinCode page status
             orElse: () => Padding(
               padding: const EdgeInsets.all(40),
               child: Column(
