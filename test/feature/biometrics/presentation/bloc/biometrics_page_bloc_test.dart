@@ -188,4 +188,81 @@ void main() {
       ],
     );
   });
+
+  group('''Tests related to calling LocalAuthBiometricsUseCase methods
+   depending on called bloc events''', () {
+    blocTest<BiometricsPageBloc, BiometricsPageState>(
+      '''Should call hasBiometricsEnabled and getUnavailableBiometricsReason methods when
+        result of hasBiometricsEnabled is false. These methods should be called after
+        emitting setBiometricsAvailability event''',
+      build: () {
+        when(mockLocalAuthBiometricsUseCase.hasBiometricsEnabled()).thenAnswer(
+          (_) async => false,
+        );
+        when(mockLocalAuthBiometricsUseCase.getUnavailableBiometricsReason())
+            .thenAnswer(
+          (_) async =>
+              UnavailableBiometricsReason.biometricsNotSupportedOnDevice,
+        );
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        const BiometricsPageEvent.setBiometricsAvailability(),
+      ),
+      verify: (_) {
+        verify(
+          mockLocalAuthBiometricsUseCase.hasBiometricsEnabled(),
+        ).called(1);
+        verify(
+          mockLocalAuthBiometricsUseCase.getUnavailableBiometricsReason(),
+        ).called(1);
+      },
+    );
+    blocTest<BiometricsPageBloc, BiometricsPageState>(
+      '''Should call hasBiometricsEnabled and getAvailableBiometrics method when
+        result of hasBiometricsEnabled is true. These methods should be called after
+        emitting setBiometricsAvailability event''',
+      build: () {
+        when(mockLocalAuthBiometricsUseCase.hasBiometricsEnabled()).thenAnswer(
+          (_) async => true,
+        );
+        when(mockLocalAuthBiometricsUseCase.getAvailableBiometrics())
+            .thenAnswer(
+          (_) async => ['FaceId'],
+        );
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        const BiometricsPageEvent.setBiometricsAvailability(),
+      ),
+      verify: (_) {
+        verify(
+          mockLocalAuthBiometricsUseCase.hasBiometricsEnabled(),
+        ).called(1);
+        verify(
+          mockLocalAuthBiometricsUseCase.getAvailableBiometrics(),
+        ).called(1);
+      },
+    );
+
+    blocTest<BiometricsPageBloc, BiometricsPageState>(
+      '''Should call authenticateWithBiometrics use case method when
+      user emitted tryToAuthorizeWithBiometrics event''',
+      build: () {
+        when(mockLocalAuthBiometricsUseCase.authenticateWithBiometrics())
+            .thenAnswer(
+          (_) async => true,
+        );
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        const BiometricsPageEvent.tryToAuthorizeWithBiometrics(),
+      ),
+      verify: (_) {
+        verify(
+          mockLocalAuthBiometricsUseCase.authenticateWithBiometrics(),
+        ).called(1);
+      },
+    );
+  });
 }
