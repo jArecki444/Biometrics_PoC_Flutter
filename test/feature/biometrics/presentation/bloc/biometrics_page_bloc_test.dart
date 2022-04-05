@@ -103,4 +103,53 @@ void main() {
       );
     },
   );
+
+  group('Tests related to emitting TryAuthorizeWithBiometrics event', () {
+    blocTest<BiometricsPageBloc, BiometricsPageState>(
+      '''Should return PageStatus.authorized(), when response from
+      authenticateWithBiometrics() use case method is true''',
+      build: () {
+        when(mockLocalAuthBiometricsUseCase.authenticateWithBiometrics())
+            .thenAnswer(
+          (_) async => true,
+        );
+        return bloc;
+      },
+      seed: () => const BiometricsPageState(
+        pageStatus: PageStatus.waitingForSelectionOfAuthMethod(),
+        availableBiometricsOptions: ['FaceId'],
+      ),
+      act: (bloc) =>
+          bloc.add(const BiometricsPageEvent.tryToAuthorizeWithBiometrics()),
+      expect: () => const <BiometricsPageState>[
+        BiometricsPageState(
+          pageStatus: PageStatus.authorized(),
+          availableBiometricsOptions: ['FaceId'],
+        ),
+      ],
+    );
+    blocTest<BiometricsPageBloc, BiometricsPageState>(
+      '''Should return PageStatus.unauthorized(), when response from
+      authenticateWithBiometrics() use case method is false''',
+      build: () {
+        when(mockLocalAuthBiometricsUseCase.authenticateWithBiometrics())
+            .thenAnswer(
+          (_) async => false,
+        );
+        return bloc;
+      },
+      seed: () => const BiometricsPageState(
+        pageStatus: PageStatus.waitingForSelectionOfAuthMethod(),
+        availableBiometricsOptions: ['FaceId'],
+      ),
+      act: (bloc) =>
+          bloc.add(const BiometricsPageEvent.tryToAuthorizeWithBiometrics()),
+      expect: () => const <BiometricsPageState>[
+        BiometricsPageState(
+          pageStatus: PageStatus.unauthorized(),
+          availableBiometricsOptions: ['FaceId'],
+        ),
+      ],
+    );
+  });
 }
