@@ -19,7 +19,7 @@ void initApplication({required Environment environment}) async {
 
 void main() {
   initApplication(
-    environment: Environment('development'),
+    environment: const Environment('development'),
   ); //only 'development' is set just for PoC purposes
 }
 

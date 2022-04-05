@@ -13,7 +13,7 @@ class NumberButton extends StatelessWidget {
       child: FloatingActionButton.extended(
         heroTag: num,
         elevation: 0,
-        backgroundColor: Color.fromARGB(255, 231, 231, 231),
+        backgroundColor: const Color.fromARGB(255, 231, 231, 231),
         onPressed: onPressed,
         label: Text(
           num,
