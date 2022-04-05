@@ -1,16 +1,21 @@
 # biometrics_auth_poc
 
-A new Flutter project.
+The purpose of this proof of concept is to build biometric and pin code authorization features.
+This application uses clean code architecture and tests written with bloc_test and mockito packages.
 
-## Getting Started
+Available features:
+- biometric authorization (face / fingerprint recognition)
+- detecting whether biometrics is available on the device
+- detecting available biometrics options
+- authorization with a pin code
+- saving the pin code in secure_storage
+- deletion of saved pin code
 
-This project is a starting point for a Flutter application.
+## Initial steps
+1. Get all required dependencies 
 
-A few resources to get you started if this is your first Flutter project:
+```flutter pub get```
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+2. Use build_runner to generate all required files
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```flutter pub run build_runner build --delete-conflicting-outputs```
