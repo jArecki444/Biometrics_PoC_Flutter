@@ -23,7 +23,7 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
   PinCodePageBloc(this._pinCodeUseCase)
       : super(
           const PinCodePageState(
-            pageStatus: PageStatus.waitingForFirstPinCode(),
+            pageStatus: PageStatus.waitingForPinCode(),
             pinCode: '',
             repeatedPinCode: '',
             isPinCodeAlreadyStored: false,
@@ -63,7 +63,7 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
       (event, emit) {
         emit(
           state.copyWith(
-            pageStatus: const PageStatus.waitingForFirstPinCode(),
+            pageStatus: const PageStatus.waitingForPinCode(),
             pinCode: '',
             repeatedPinCode: '',
           ),
@@ -73,7 +73,7 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
 
     on<PinButtonButtonPressedEvent>(
       (event, emit) async {
-        if (state.pageStatus == const PageStatus.waitingForFirstPinCode()) {
+        if (state.pageStatus == const PageStatus.waitingForPinCode()) {
           emit(
             state.copyWith(
               pinCode: state.pinCode + event.pinInput,
@@ -85,8 +85,8 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
           // otherwise we will wait for the repeated pin code
           if (state.pinCode.length == 4) {
             await Future.delayed(const Duration(milliseconds: 300));
-            // This delay is used to give user time to see the pin code of full length
-            // Otherwise user will be navigated immediately to the repeated pin code page after
+            // This delay is used to give user time to see the pin code of full length before
+            // we will show next step (waiting for repeated pin code / pin code match / pin code not match)
 
             if (state.isPinCodeAlreadyStored) {
               final isMatchingPinCode = await _pinCodeUseCase.isMatchingPinCode(
@@ -122,8 +122,9 @@ class PinCodePageBloc extends Bloc<PinCodePageEvent, PinCodePageState> {
             // We will compare the two pin codes, if they are equal, then we will store the pin code
             // If pin codes are not equal, then we will show the user appropriate message based on pinCodeNotMatch state
             if (state.repeatedPinCode.length == 4) {
-              await Future.delayed(const Duration(milliseconds: 200));
-
+              await Future.delayed(const Duration(milliseconds: 300));
+              // This delay is used to give user time to see the pin code of full length before
+              // we will show result (pin code match / pin code not match)
               if (state.repeatedPinCode == state.pinCode) {
                 await _pinCodeUseCase.savePinCode(state.pinCode);
                 emit(

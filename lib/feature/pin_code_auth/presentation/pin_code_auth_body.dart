@@ -37,7 +37,7 @@ class PinCodeAuthBody extends StatelessWidget {
               ),
             ),
 
-            //waitingForFirstPinCode or waitingForRepeatedPinCode page status
+            //waitingForPinCode or waitingForRepeatedPinCode page status
             orElse: () => Padding(
               padding: const EdgeInsets.all(40),
               child: Column(
@@ -47,7 +47,7 @@ class PinCodeAuthBody extends StatelessWidget {
                 children: [
                   Text(
                     state.pageStatus.maybeWhen(
-                      waitingForFirstPinCode: () => 'Enter PIN code',
+                      waitingForPinCode: () => 'Enter PIN code',
                       waitingForRepeatedPinCode: () => 'Repeat PIN code',
                       orElse: () => '',
                     ),

@@ -19,7 +19,7 @@ void main() {
 
   group('Tests related to bloc initialization', () {
     blocTest<PinCodePageBloc, PinCodePageState>(
-      '''Should return PageStatus.waitingForFirstPinCode() and isPinCodeAlreadyStored == true
+      '''Should return PageStatus.waitingForPinCode() and isPinCodeAlreadyStored == true
        if stored pin code was found after initialization''',
       build: () {
         when(mockStoredPinCodeUseCase.isPinCodeAlreadyStored()).thenAnswer(
@@ -30,7 +30,7 @@ void main() {
       act: (bloc) => bloc.initialize(),
       expect: () => <PinCodePageState>[
         const PinCodePageState(
-          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pageStatus: PageStatus.waitingForPinCode(),
           pinCode: '',
           repeatedPinCode: '',
           isPinCodeAlreadyStored: true,
@@ -38,7 +38,7 @@ void main() {
       ],
     );
     blocTest<PinCodePageBloc, PinCodePageState>(
-      '''Should return PageStatus.waitingForFirstPinCode() and isPinCodeAlreadyStored == false
+      '''Should return PageStatus.waitingForPinCode() and isPinCodeAlreadyStored == false
        if stored pin code was not found after initialization''',
       build: () {
         when(mockStoredPinCodeUseCase.isPinCodeAlreadyStored()).thenAnswer(
@@ -49,7 +49,7 @@ void main() {
       act: (bloc) => bloc.initialize(),
       expect: () => <PinCodePageState>[
         const PinCodePageState(
-          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pageStatus: PageStatus.waitingForPinCode(),
           pinCode: '',
           repeatedPinCode: '',
           isPinCodeAlreadyStored: false,
@@ -63,7 +63,7 @@ void main() {
       'Should return pinCode without last character, after emitting eraseLastPinInputPressed event',
       build: () => bloc,
       seed: () => const PinCodePageState(
-        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pageStatus: PageStatus.waitingForPinCode(),
         pinCode: '123',
         repeatedPinCode: '',
         isPinCodeAlreadyStored: false,
@@ -72,7 +72,7 @@ void main() {
           bloc.add(const PinCodePageEvent.eraseLastPinInputPressed()),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
-          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pageStatus: PageStatus.waitingForPinCode(),
           pinCode: '12',
           repeatedPinCode: '',
           isPinCodeAlreadyStored: false,
@@ -115,7 +115,7 @@ void main() {
       act: (bloc) => bloc.add(const PinCodePageEvent.tryAgainButtonPressed()),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
-          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pageStatus: PageStatus.waitingForPinCode(),
           pinCode: '',
           repeatedPinCode: '',
           isPinCodeAlreadyStored: true,
@@ -140,7 +140,7 @@ void main() {
         return bloc;
       },
       seed: () => const PinCodePageState(
-        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pageStatus: PageStatus.waitingForPinCode(),
         pinCode: '123',
         repeatedPinCode: '',
         isPinCodeAlreadyStored: true,
@@ -150,7 +150,7 @@ void main() {
       wait: const Duration(milliseconds: 300),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
-          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pageStatus: PageStatus.waitingForPinCode(),
           pinCode: '1234',
           repeatedPinCode: '',
           isPinCodeAlreadyStored: true,
@@ -176,7 +176,7 @@ void main() {
         return bloc;
       },
       seed: () => const PinCodePageState(
-        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pageStatus: PageStatus.waitingForPinCode(),
         pinCode: '123',
         repeatedPinCode: '',
         isPinCodeAlreadyStored: true,
@@ -186,7 +186,7 @@ void main() {
       wait: const Duration(milliseconds: 300),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
-          pageStatus: PageStatus.waitingForFirstPinCode(),
+          pageStatus: PageStatus.waitingForPinCode(),
           pinCode: '1234',
           repeatedPinCode: '',
           isPinCodeAlreadyStored: true,
@@ -308,7 +308,7 @@ void main() {
         return bloc;
       },
       seed: () => const PinCodePageState(
-        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pageStatus: PageStatus.waitingForPinCode(),
         pinCode: '123',
         repeatedPinCode: '',
         isPinCodeAlreadyStored: true,

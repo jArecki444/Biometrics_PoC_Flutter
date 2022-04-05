@@ -31,7 +31,7 @@ class PinCodeDotsIndicator extends StatelessWidget {
     String repeatedPinCode,
   ) {
     return pageStatus.maybeWhen(
-        waitingForFirstPinCode: () => firstPinCode.length,
+        waitingForPinCode: () => firstPinCode.length,
         waitingForRepeatedPinCode: () => repeatedPinCode.length,
         orElse: () => 0);
   }
