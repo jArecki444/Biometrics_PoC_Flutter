@@ -261,4 +261,65 @@ void main() {
       ],
     );
   });
+
+  group(
+      'Tests related to calling storedPinCodeUseCase methods, depending on called bloc events',
+      () {
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should call savePinCode use case method once, when there is no stored pin code
+      but repeatedPinCode matches the entered pin code''',
+      build: () {
+        return bloc;
+      },
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForRepeatedPinCode(),
+        pinCode: '1234',
+        repeatedPinCode: '123',
+        isPinCodeAlreadyStored: false,
+      ),
+      act: (bloc) => bloc.add(
+        const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4'),
+      ),
+      wait: const Duration(milliseconds: 300),
+      verify: (_) {
+        verify(mockStoredPinCodeUseCase.savePinCode('1234')).called(1);
+      },
+    );
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should call isPinCodeAlreadyStored use case method once after bloc initialization method''',
+      build: () {
+        when(mockStoredPinCodeUseCase.isPinCodeAlreadyStored()).thenAnswer(
+          (_) async => false,
+        );
+        return bloc;
+      },
+      act: (bloc) => bloc.initialize(),
+      verify: (_) {
+        verify(mockStoredPinCodeUseCase.isPinCodeAlreadyStored()).called(1);
+      },
+    );
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should call isMatchingPinCode use case method once when there is stored pin code
+      and user enters 4th character of pinCode''',
+      build: () {
+        when(mockStoredPinCodeUseCase.isMatchingPinCode('1234')).thenAnswer(
+          (_) async => true,
+        );
+        return bloc;
+      },
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForFirstPinCode(),
+        pinCode: '123',
+        repeatedPinCode: '',
+        isPinCodeAlreadyStored: true,
+      ),
+      act: (bloc) => bloc.add(
+        const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4'),
+      ),
+      wait: const Duration(milliseconds: 300),
+      verify: (_) {
+        verify(mockStoredPinCodeUseCase.isMatchingPinCode('1234')).called(1);
+      },
+    );
+  });
 }

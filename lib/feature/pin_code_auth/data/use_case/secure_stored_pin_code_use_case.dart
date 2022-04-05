@@ -23,6 +23,4 @@ class SecureStoredPinCodeUseCase extends PinCodeUseCase {
     final storedPinCode = await _pinCodeRepository.getAlreadyStoredPinCode();
     return storedPinCode != null && storedPinCode == pinCode;
   }
-
-
 }
