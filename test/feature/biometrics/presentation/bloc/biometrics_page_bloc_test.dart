@@ -152,4 +152,40 @@ void main() {
       ],
     );
   });
+
+  group('Tests related to emitting restartAuthState event', () {
+    blocTest<BiometricsPageBloc, BiometricsPageState>(
+      '''Should return PageStatus.waitingForSelectionOfAuthMethod(), 
+      when pageStatus was set to unauthorized() and user emitted restartAuthState event''',
+      build: () => bloc,
+      seed: () => const BiometricsPageState(
+        pageStatus: PageStatus.unauthorized(),
+        availableBiometricsOptions: ['FaceId'],
+      ),
+      act: (bloc) => bloc.add(const BiometricsPageEvent.restartAuthState()),
+      expect: () => const <BiometricsPageState>[
+        BiometricsPageState(
+          pageStatus: PageStatus.waitingForSelectionOfAuthMethod(),
+          availableBiometricsOptions: ['FaceId'],
+        ),
+      ],
+    );
+    blocTest<BiometricsPageBloc, BiometricsPageState>(
+      '''Should return PageStatus.waitingForSelectionOfAuthMethod(), 
+      when pageStatus was set to authorized() and user emitted restartAuthState event
+      (just for debug purposes, to give the user an option to test authorization again)''',
+      build: () => bloc,
+      seed: () => const BiometricsPageState(
+        pageStatus: PageStatus.authorized(),
+        availableBiometricsOptions: ['FaceId'],
+      ),
+      act: (bloc) => bloc.add(const BiometricsPageEvent.restartAuthState()),
+      expect: () => const <BiometricsPageState>[
+        BiometricsPageState(
+          pageStatus: PageStatus.waitingForSelectionOfAuthMethod(),
+          availableBiometricsOptions: ['FaceId'],
+        ),
+      ],
+    );
+  });
 }
