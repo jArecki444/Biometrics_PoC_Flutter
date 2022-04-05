@@ -60,8 +60,32 @@ class PinCodeAuthBody extends StatelessWidget {
                   ),
                   const Spacer(),
                   const Flexible(
-                    flex: 2,
+                    flex: 3,
                     child: PinNumberKeyboard(),
+                  ),
+                  Visibility(
+                    visible: state.isPinCodeAlreadyStored,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text(
+                            'Debug only: ',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                          ElevatedButton(
+                            onPressed: () =>
+                                context.read<PinCodePageBloc>().add(
+                                      const PinCodePageEvent
+                                          .deleteStoredPinCodeButtonPressed(),
+                                    ),
+                            child: const Text('Delete stored pin code'),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ),

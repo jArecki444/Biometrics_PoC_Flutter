@@ -147,7 +147,7 @@ void main() {
       ),
       act: (bloc) => bloc
           .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4')),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(milliseconds: 150),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
           pageStatus: PageStatus.waitingForPinCode(),
@@ -183,7 +183,7 @@ void main() {
       ),
       act: (bloc) => bloc
           .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4')),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(milliseconds: 150),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
           pageStatus: PageStatus.waitingForPinCode(),
@@ -211,9 +211,10 @@ void main() {
         repeatedPinCode: '123',
         isPinCodeAlreadyStored: false,
       ),
-      act: (bloc) => bloc
-          .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4')),
-      wait: const Duration(milliseconds: 300),
+      act: (bloc) => bloc.add(
+        const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4'),
+      ),
+      wait: const Duration(milliseconds: 150),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
           pageStatus: PageStatus.waitingForRepeatedPinCode(),
@@ -242,9 +243,10 @@ void main() {
         repeatedPinCode: '123',
         isPinCodeAlreadyStored: false,
       ),
-      act: (bloc) => bloc
-          .add(const PinCodePageEvent.pinButtonButtonPressed(pinInput: '0')),
-      wait: const Duration(milliseconds: 300),
+      act: (bloc) => bloc.add(
+        const PinCodePageEvent.pinButtonButtonPressed(pinInput: '0'),
+      ),
+      wait: const Duration(milliseconds: 150),
       expect: () => const <PinCodePageState>[
         PinCodePageState(
           pageStatus: PageStatus.waitingForRepeatedPinCode(),
@@ -254,6 +256,30 @@ void main() {
         ),
         PinCodePageState(
           pageStatus: PageStatus.pinCodeNotMatch(),
+          pinCode: '',
+          repeatedPinCode: '',
+          isPinCodeAlreadyStored: false,
+        ),
+      ],
+    );
+  });
+
+  group('Tests related to emitting deleteStoredPinCodeButtonPressed event', () {
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      'Should return isPinCodeAlreadyStored: false, after emitting deleteStoredPinCodeButtonPressed event',
+      build: () => bloc,
+      seed: () => const PinCodePageState(
+        pageStatus: PageStatus.waitingForRepeatedPinCode(),
+        pinCode: '1234',
+        repeatedPinCode: '12',
+        isPinCodeAlreadyStored: true,
+      ),
+      act: (bloc) => bloc.add(
+        const PinCodePageEvent.deleteStoredPinCodeButtonPressed(),
+      ),
+      expect: () => const <PinCodePageState>[
+        PinCodePageState(
+          pageStatus: PageStatus.waitingForPinCode(),
           pinCode: '',
           repeatedPinCode: '',
           isPinCodeAlreadyStored: false,
@@ -280,7 +306,7 @@ void main() {
       act: (bloc) => bloc.add(
         const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4'),
       ),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(milliseconds: 150),
       verify: (_) {
         verify(mockStoredPinCodeUseCase.savePinCode('1234')).called(1);
       },
@@ -316,9 +342,22 @@ void main() {
       act: (bloc) => bloc.add(
         const PinCodePageEvent.pinButtonButtonPressed(pinInput: '4'),
       ),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(milliseconds: 150),
       verify: (_) {
         verify(mockStoredPinCodeUseCase.isMatchingPinCode('1234')).called(1);
+      },
+    );
+    blocTest<PinCodePageBloc, PinCodePageState>(
+      '''Should call deletePinCode use case method once, when there is stored pin code
+      and user emits deleteStoredPinCodeButtonPressed event''',
+      build: () {
+        return bloc;
+      },
+      act: (bloc) => bloc.add(
+        const PinCodePageEvent.deleteStoredPinCodeButtonPressed(),
+      ),
+      verify: (_) {
+        verify(mockStoredPinCodeUseCase.deletePinCode()).called(1);
       },
     );
   });

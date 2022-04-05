@@ -15,7 +15,7 @@ class PinNumberKeyboard extends StatelessWidget {
         Flexible(
           child: Row(
             children: [
-              for (int i = 1; i < 4; i++)
+              for (int i = 1; i < 4; i++) ...[
                 Expanded(
                   child: NumberButton(
                     num: '$i',
@@ -26,6 +26,10 @@ class PinNumberKeyboard extends StatelessWidget {
                         ),
                   ),
                 ),
+                SizedBox(
+                  width: i != 3 ? 64 : 0,
+                ), //Do not apply extra width to the last button
+              ],
             ],
           ),
         ),
@@ -33,7 +37,7 @@ class PinNumberKeyboard extends StatelessWidget {
         Flexible(
           child: Row(
             children: [
-              for (int i = 4; i < 7; i++)
+              for (int i = 4; i < 7; i++) ...[
                 Expanded(
                   child: NumberButton(
                     num: '$i',
@@ -44,6 +48,12 @@ class PinNumberKeyboard extends StatelessWidget {
                         ),
                   ),
                 ),
+                SizedBox(
+                  width: i != 6 //Do not apply extra width to the last button
+                      ? 64
+                      : 0,
+                ),
+              ],
             ],
           ),
         ),
@@ -51,7 +61,7 @@ class PinNumberKeyboard extends StatelessWidget {
         Flexible(
           child: Row(
             children: [
-              for (int i = 7; i < 10; i++)
+              for (int i = 7; i < 10; i++) ...[
                 Expanded(
                   child: NumberButton(
                     num: '$i',
@@ -62,6 +72,12 @@ class PinNumberKeyboard extends StatelessWidget {
                         ),
                   ),
                 ),
+                SizedBox(
+                  width: i != 9 //Do not apply extra width to the last button
+                      ? 64
+                      : 0,
+                ),
+              ]
             ],
           ),
         ),
